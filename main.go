@@ -6,9 +6,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/eve-an/torrentd/pkg/hash"
 	"github.com/eve-an/torrentd/pkg/parser"
-	"github.com/eve-an/torrentd/pkg/torrent"
 )
 
 type args struct {
@@ -50,11 +48,11 @@ func main() {
 		fail(err)
 	}
 
-	file, err := os.Open(args.file)
-	if err != nil {
-		fail(err)
-	}
-	defer file.Close()
+	// file, err := os.Open(args.file)
+	// if err != nil {
+	// 	fail(err)
+	// }
+	// defer file.Close()
 
 	torrentFile, err := os.Open(args.torrentFile)
 	if err != nil {
@@ -62,25 +60,27 @@ func main() {
 	}
 	defer torrentFile.Close()
 
-	infoDict, err := parser.ParseFromReader(bufio.NewReader(torrentFile))
+	dict, err := parser.ParseFromReader(bufio.NewReader(torrentFile))
 	if err != nil {
 		fail(err)
 	}
 
-	meta, err := torrent.NewTorrentMeta(infoDict)
-	if err != nil {
-		fail(err)
-	}
+	fmt.Print(dict.String())
 
-	fileHashes, err := hash.GenerateFileHashes(bufio.NewReader(file), meta.PieceLength)
-	if err != nil {
-		fail(err)
-	}
-
-	verifier, err := torrent.NewTorrentVerifier(meta, fileHashes)
-	if err != nil {
-		fail(err)
-	}
-
-	fmt.Printf("Progress %f\n", verifier.Progress())
+	// meta, err := torrent.NewTorrentMeta(dict)
+	// if err != nil {
+	// 	fail(err)
+	// }
+	//
+	// fileHashes, err := hash.GenerateFileHashes(bufio.NewReader(file), meta.PieceLength)
+	// if err != nil {
+	// 	fail(err)
+	// }
+	//
+	// verifier, err := torrent.NewTorrentVerifier(meta, fileHashes)
+	// if err != nil {
+	// 	fail(err)
+	// }
+	//
+	// fmt.Printf("Progress %f\n", verifier.Progress())
 }
