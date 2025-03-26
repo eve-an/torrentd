@@ -1,7 +1,36 @@
 # Torrentd
 
+Ever downloaded a torrent over a torrent client like qBittorrent or Transmission and you wanted to automate the completion of the torrent?
+Often these clients don't handle finished torrents well (see [qbit Issue](https://github.com/qbittorrent/qBittorrent/issues/21568)).
+To be independent of the torrent client behaviour and its quirks **Torrentd** comes into place!
 
-## Bencoding Grammar
+**Torrentd** monitors the status of a torrent download. Currently it is designed to do so as a cron or CLI, but in future versions a daemon should run in background
+to fulfill additional tasks like moving completed files to a given destination. 
+
+## Usage
+
+```shell
+./torrentd <file> <torrentFile>
+```
+
+## Technical background
+
+### Bittorrent protocol
+
+The protocol can be found [here](https://www.bittorrent.org/beps/bep_0003.html).
+For us the important sections are *bencoding*, *metainfo files* and *trackers*.
+
+When we want to download a torrent we first need to download the corresponding `.torrent` file.
+This is a *bencoded* file with meta information for our torrent client.
+The bencoded file saves the URL of the tracker alongside with an `info` node.
+There we find information like the name of the downloaded file, it's length and most importantly:
+`pieces` and `pieces length`.
+
+`pieces length` gives us the chunk size in bytes for the hashing of the original file. That means our 
+file is chunked and for each chunk we compute the *sha1* hash for progress monitoring.
+The counterpart for that is the `pieces` field where the hashes are stored as byte strings.
+
+### Bencoding Grammar
 
 ```
 <value>     ::= <integer> | <string> | <list> | <dictionary>
@@ -11,3 +40,9 @@
 <list>      ::= 'l' <value>* 'e'
 <dictionary>::= 'd' (<string> <value>)* 'e'
 ```
+
+## TODOs
+
+- [ ] migrate to Cobra from custom args parsing
+- [ ] add integration testing
+- [ ] move from Cron like system to a daemon
