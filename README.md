@@ -59,7 +59,7 @@ A bencoded `archlinux-2025.03.01-x86_64.iso.torrent` file json transformed (http
 
 ## TODOs
 
-- [ ] migrate to Cobra from custom args parsing
-- [ ] add integration testing
+- [X] migrate to Cobra from custom args parsing
 - [ ] move from Cron like system to a daemon
 - [ ] add extensible system for executing commands after torrent completion
+- [ ] add support for multi file downloads

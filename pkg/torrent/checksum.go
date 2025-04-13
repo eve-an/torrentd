@@ -26,7 +26,7 @@ func (t *TorrentVerifier) IsCompleted() bool {
 }
 
 func (t *TorrentVerifier) Progress() float64 {
-	total := len(t.torrent.Pieces)
+	total := t.TotalBlocks()
 	missing := t.MissingBlocks()
 
 	return float64(total-missing) / float64(total)
@@ -42,4 +42,8 @@ func (t *TorrentVerifier) MissingBlocks() int {
 	}
 
 	return missing
+}
+
+func (t *TorrentVerifier) TotalBlocks() int {
+	return len(t.torrent.Pieces)
 }
